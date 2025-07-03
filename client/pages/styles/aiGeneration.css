@@ -88,3 +88,28 @@
   border: 2px solid #f85712;
   box-shadow: 0 0 10px rgba(248, 87, 18, 0.3);
 }
+.loading-message {
+  color: #f85712;
+  font-style: italic;
+  font-size: 2rem;
+}
+
+.dotting::after {
+  content: ".";
+  animation: dots 1s steps(3, end) infinite;
+}
+
+@keyframes dots {
+  0% {
+    content: ".";
+  }
+  33% {
+    content: "..";
+  }
+  66% {
+    content: "...";
+  }
+  100% {
+    content: ".";
+  }
+}

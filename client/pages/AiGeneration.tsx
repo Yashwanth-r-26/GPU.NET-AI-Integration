@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-// import leonardoai from "@api/leonardoai";
 import "./styles/aiGeneration.css";
-import.meta.env.VITE_LEONARDO_API_KEY;
+
 const defaultNegativePrompt = "";
 
 const AIGenerator = () => {
@@ -14,8 +13,11 @@ const AIGenerator = () => {
   const [guidance, setGuidance] = useState(7);
   const [images, setImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
+
   const handleGenerate = async () => {
     setLoading(true);
+    setIsPolling(false);
     setImages([]);
 
     try {
@@ -42,12 +44,14 @@ const AIGenerator = () => {
             guidance_scale: guidance,
             num_inference_steps: steps,
           }),
-        },
+        }
       );
 
       const genData = await genResponse.json();
       const generationId = genData?.sdGenerationJob?.generationId;
       if (!generationId) throw new Error("No generation ID received.");
+
+      setIsPolling(true);
 
       const checkStatus = async (attempt = 0) => {
         if (attempt > 30) throw new Error("Timeout waiting for generation.");
@@ -58,16 +62,18 @@ const AIGenerator = () => {
             headers: {
               Authorization: `Bearer ${apiKey}`,
             },
-          },
+          }
         );
+
         const statusData = await statusRes.json();
         const status = statusData?.generations_by_pk?.status;
 
         if (status === "COMPLETE") {
           const imgs = statusData.generations_by_pk.generated_images.map(
-            (img: any) => img.url,
+            (img: any) => img.url
           );
           setImages(imgs);
+          setIsPolling(false);
         } else {
           setTimeout(() => checkStatus(attempt + 1), 2000);
         }
@@ -77,6 +83,7 @@ const AIGenerator = () => {
     } catch (err) {
       console.error("Leonardo AI generation error:", err);
       alert("Error generating image with Leonardo AI.");
+      setIsPolling(false);
     } finally {
       setLoading(false);
     }
@@ -108,27 +115,22 @@ const AIGenerator = () => {
               step={8}
               onChange={(e) => {
                 const val = e.target.value;
-
                 if (val === "") {
                   setWidth(32);
                   return;
                 }
-
                 const num = Number(val);
-                if (!isNaN(num)) {
-                  setWidth(num);
-                }
+                if (!isNaN(num)) setWidth(num);
               }}
               onBlur={(e) => {
-                const num = Number(e.target.value);
-
+                let num = Number(e.target.value);
                 let adjusted = Math.max(32, Math.min(1536, num));
                 adjusted = Math.round(adjusted / 8) * 8;
-
                 setWidth(adjusted);
               }}
             />
           </label>
+
           <label>
             Height{" "}
             <input
@@ -139,23 +141,17 @@ const AIGenerator = () => {
               step={8}
               onChange={(e) => {
                 const val = e.target.value;
-
                 if (val === "") {
                   setHeight(32);
                   return;
                 }
-
                 const num = Number(val);
-                if (!isNaN(num)) {
-                  setHeight(num);
-                }
+                if (!isNaN(num)) setHeight(num);
               }}
               onBlur={(e) => {
-                const num = Number(e.target.value);
-
+                let num = Number(e.target.value);
                 let adjusted = Math.max(32, Math.min(1536, num));
                 adjusted = Math.round(adjusted / 8) * 8;
-
                 setHeight(adjusted);
               }}
             />
@@ -202,12 +198,19 @@ const AIGenerator = () => {
           {loading ? "Generating..." : "Generate Image"}
         </button>
       </div>
+
       <div className="results">
-        {images.length > 0
-          ? images.map((img, idx) => (
-              <img key={idx} src={img} alt={`Generated ${idx}`} />
-            ))
-          : !loading && <p style={{ color: "#999" }}>No images yet.</p>}
+        {images.length > 0 ? (
+          images.map((img, idx) => (
+            <img key={idx} src={img} alt={`Generated ${idx}`} />
+          ))
+        ) : loading || isPolling ? (
+          <p className="loading-message">
+            <span className="dotting" />
+          </p>
+        ) : (
+          <p style={{ color: "#999" }}>No images yet.</p>
+        )}
       </div>
     </div>
   );

@@ -2,9 +2,9 @@ import { defineConfig, Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/spa/", 
   server: {
     host: "::",
     port: 8080,
@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist/spa",
   },
-  plugins: [react()],
+  plugins: [react(),],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
@@ -20,7 +20,6 @@ export default defineConfig(({ mode }) => ({
     },
   },
 }));
-
 
 // function expressPlugin(): Plugin {
 //   return {
