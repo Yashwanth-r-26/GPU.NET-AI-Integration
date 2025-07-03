@@ -33,12 +33,12 @@ export const fadeIn = (
   },
 });
 
-const QuestCard = ({ index, title, users, active, bgImage, onClick }) => (
+const VendorCard = ({ index, title, users, active, bgImage, onClick }) => (
   <Tilt className="tilt-wrapper">
     <motion.div
       onClick={onClick}
       variants={fadeIn("right", "spring", index * 0.3, 0.75)}
-      className={`quest-card-wrapper ${active ? "active" : ""}`}
+      className={`vendor-card-wrapper ${active ? "active" : ""}`}
       style={{
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
@@ -50,10 +50,10 @@ const QuestCard = ({ index, title, users, active, bgImage, onClick }) => (
       animate={{ scale: active ? 1.1 : 0.95, zIndex: active ? 2 : 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 30 }}
     >
-      <div className="quest-card-inner">
-        <h2 className="quest-title">{title}</h2>
-        <p className="quest-stats">{users}</p>
-        <button className="quest-button">Generate Now</button>
+      <div className="vendor-card-inner">
+        <h2 className="vendor-title">{title}</h2>
+        <p className="vendor-stats">{users}</p>
+        <button className="vendor-button">Generate Now</button>
       </div>
     </motion.div>
   </Tilt>
@@ -64,7 +64,7 @@ const ImageGenerator = () => {
   const [activeCardIndex, setActiveCardIndex] = useState(1);
   const cardsPerPage = 3;
 
-  const quests = [
+  const vendors = [
     {
       title: "Leonardo.Ai",
       users: "+18 Million Creators",
@@ -97,7 +97,7 @@ const ImageGenerator = () => {
     },
   ];
 
-  const visibleQuests = quests.slice(startIndex, startIndex + cardsPerPage);
+  const visiblevendors = vendors.slice(startIndex, startIndex + cardsPerPage);
 
   const handleLeft = () => {
     if (startIndex - cardsPerPage >= 0) {
@@ -106,7 +106,7 @@ const ImageGenerator = () => {
   };
 
   const handleRight = () => {
-    if (startIndex + cardsPerPage < quests.length) {
+    if (startIndex + cardsPerPage < vendors.length) {
       setStartIndex(startIndex + cardsPerPage);
     }
   };
@@ -138,8 +138,8 @@ const ImageGenerator = () => {
         </section>
       </div>
 
-      <section className="quest-overlay">
-        <div className="quest-carousel-wrapper">
+      <section className="vendor-overlay">
+        <div className="vendor-carousel-wrapper">
           <button
             className="arrow left"
             onClick={handleLeft}
@@ -148,16 +148,16 @@ const ImageGenerator = () => {
             <FaArrowLeft />
           </button>
 
-          <div className="quest-container">
-            {visibleQuests.map((quest, index) => {
+          <div className="vendor-container">
+            {visiblevendors.map((vendor, index) => {
               const actualIndex = startIndex + index;
               return (
-                <QuestCard
-                  key={quest.title}
+                <VendorCard
+                  key={vendor.title}
                   index={index}
-                  title={quest.title}
-                  users={quest.users}
-                  bgImage={quest.bg}
+                  title={vendor.title}
+                  users={vendor.users}
+                  bgImage={vendor.bg}
                   active={actualIndex === activeCardIndex}
                   onClick={() => setActiveCardIndex(actualIndex)}
                 />
@@ -168,7 +168,7 @@ const ImageGenerator = () => {
           <button
             className="arrow right"
             onClick={handleRight}
-            disabled={startIndex + cardsPerPage >= quests.length}
+            disabled={startIndex + cardsPerPage >= vendors.length}
           >
             <FaArrowRight />
           </button>
