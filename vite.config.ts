@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: "dist/spa",
   },
-  plugins: [react(), expressPlugin()],
+  plugins: [react(),],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./client"),
@@ -21,15 +21,15 @@ export default defineConfig(({ mode }) => ({
   },
 }));
 
-function expressPlugin(): Plugin {
-  return {
-    name: "express-plugin",
-    apply: "serve", 
-    configureServer(server) {
+// function expressPlugin(): Plugin {
+//   return {
+//     name: "express-plugin",
+//     apply: "serve", 
+//     configureServer(server) {
       
 
-      // Add Express app as middleware to Vite dev server
+//       // Add Express app as middleware to Vite dev server
       
-    },
-  };
-}
+//     },
+//   };
+// }
