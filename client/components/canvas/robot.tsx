@@ -1,20 +1,21 @@
 import React, { Suspense, useEffect, useState, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Preload, useGLTF ,useAnimations} from "@react-three/drei";
+import {
+  OrbitControls,
+  Preload,
+  useGLTF,
+  useAnimations,
+} from "@react-three/drei";
 import CanvasLoader from "./loader";
 import { Group } from "three";
-import { Mesh, MeshStandardMaterial } from "three"; 
+import { Mesh, MeshStandardMaterial } from "three";
 
 const Computers = ({ isMobile }) => {
-  
-
-
   const modelRef = useRef<Group>(null);
-    const { scene, animations } = useGLTF("../../../robot/source/robot.gltf");
+  const { scene, animations } = useGLTF("../../../robot/source/robot.gltf");
   const { actions } = useAnimations(animations, modelRef);
 
-
- useEffect(() => {
+  useEffect(() => {
     if (!actions) return;
 
     const names = Object.keys(actions);
@@ -29,7 +30,7 @@ const Computers = ({ isMobile }) => {
       const nextAction = actions[names[index]];
       if (nextAction) {
         nextAction.reset().fadeIn(0.5).play();
-        
+
         currentAction = nextAction;
       }
 
@@ -48,23 +49,21 @@ const Computers = ({ isMobile }) => {
     }
   });
 
-useEffect(() => {
-  scene.traverse((child) => {
-    if ((child as Mesh).isMesh) {
-      const mesh = child as Mesh;
+  useEffect(() => {
+    scene.traverse((child) => {
+      if ((child as Mesh).isMesh) {
+        const mesh = child as Mesh;
 
-      if (mesh.material && "color" in mesh.material) {
-        const material = mesh.material as MeshStandardMaterial;
-        material.color.set("#f85712");
+        if (mesh.material && "color" in mesh.material) {
+          const material = mesh.material as MeshStandardMaterial;
+          material.color.set("#f85712");
 
-        if ("metalness" in material) material.metalness = 0.1;
-        if ("roughness" in material) material.roughness = 0.1;
+          if ("metalness" in material) material.metalness = 0.1;
+          if ("roughness" in material) material.roughness = 0.1;
+        }
       }
-    }
-  });
-}, [scene]);
-
-
+    });
+  }, [scene]);
 
   return (
     <mesh>
@@ -83,7 +82,7 @@ useEffect(() => {
         object={scene}
         scale={isMobile ? 0.7 : 0.75}
         position={isMobile ? [0, -3, -2.2] : [0, -3.25, -1.5]}
-        rotation={[0, Math.PI*1.3, 0]}
+        rotation={[0, Math.PI * 1.3, 0]}
       />
     </mesh>
   );
@@ -123,7 +122,7 @@ const ComputersCanvas = () => {
         <Computers isMobile={isMobile} />
       </Suspense>
       <ambientLight intensity={20} />
-<directionalLight position={[10, 10, 5]} intensity={20} />
+      <directionalLight position={[10, 10, 5]} intensity={20} />
 
       <Preload all />
     </Canvas>
